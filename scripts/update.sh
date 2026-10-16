@@ -1,10 +1,10 @@
 #!/bin/sh
-# UPHarness update: pull latest code and rebuild for the current OS.
+# UPHarness Update: pull neuesten Code und rebuild für das aktuelle OS.
 set -e
 cd "$(dirname "$0")/.."
-echo "Pulling latest code..."
+echo "Pull neuesten Code..."
 git pull
-echo "Rebuilding..."
+echo "Rebuild..."
 OS_NAME="$(uname -s)"
 case "$OS_NAME" in
   Linux*)
@@ -13,9 +13,9 @@ case "$OS_NAME" in
     else
       GOOS=linux GOARCH=amd64 go build -o upharness .
     fi
-    ;;
-  Darwin*) GOOS=darwin GOARCH=arm64 go build -o upharness . ;;
-  MINGW*|MSYS*|CYGWIN*) GOOS=windows GOARCH=amd64 go build -o upharness.exe . ;;
-  *) go build -o upharness . ;;
+    ;;&
+  Darwin*) GOOS=darwin GOARCH=arm64 go build -o upharness . ;;&
+  MINGW*|MSYS*|CYGWIN*) GOOS=windows GOARCH=amd64 go build -o upharness.exe . ;;&
+  *) go build -o upharness . ;;&
 esac
-echo "Done. Restart with ./upharness (or upharness.exe on Windows)."
+echo "Fertig. Neustarten mit ./upharness (oder upharness.exe unter Windows)."
