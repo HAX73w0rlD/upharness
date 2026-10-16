@@ -40,19 +40,19 @@ input::placeholder { color:rgba(255,255,255,0.5); }
 <div class="logo">UP<span style="color:#a5b4fc">Harness</span></div>
 <div class="subtitle">AI-Harness einrichten ‚Äì Links einf√ºgen, automatisch starten</div>
 
-<h2>1Ô∏è‚É£ Zugang konfigurieren</h2>
+<h2>1 Zugang konfigurieren</h2>
 <label>OpenCode-Server URL</label>
 <input type="text" id="url" placeholder="http://127.0.0.1:3002" value="http://127.0.0.1:3002">
 
 <label>OpenCode Passwort</label>
 <input type="password" id="password" placeholder="Passwort vom OpenCode-Server">
 
-<h2>2Ô∏è‚É£ Telegram (optional)</h2>
+<h2>2 Telegram (optional)</h2>
 <label>Telegram Bot Token</label>
 <input type="text" id="telegram" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
-<div class="small">Ì†ΩÌ≤ê Token von @BotFather bekommen. Kann auch sp√§ter erg√§nzt werden.</div>
+<div class="small">Token von @BotFather. Kann sp√§ter erg√§nzt werden.</div>
 
-<h2>3Ô∏è‚É£ Modell-Anbieter</h2>
+<h2>3 Modell-Anbieter</h2>
 <div class="row">
 <div>
 <label>NVIDIA API Key</label>
@@ -65,44 +65,44 @@ input::placeholder { color:rgba(255,255,255,0.5); }
 <span class="badge">Free</span>
 </div>
 </div>
-<div class="small">Ì†ΩÌ∫Ä NVIDIA & OpenRouter haben kostenlose Modelle. Keys einfach hier einf√ºgen.</div>
+<div class="small">NVIDIA & OpenRouter haben kostenlose Modelle. Keys einfach hier einf√ºgen.</div>
 
 <div class="divider"></div>
 
-<button class="btn" id="startBtn">Ì†ΩÌ∫Ä Alles speichern & automatisch starten</button>
-<button class="btn secondary" id="testBtn">Ì†ΩÌ¥ç Verbindung testen</button>
+<button class="btn" id="startBtn">Alles speichern & automatisch starten</button>
+<button class="btn secondary" id="testBtn">Verbindung testen</button>
 
 <div class="status" id="status"></div>
-<div class="small" style="margin-top:24px;">‚ö° Nach dem Start l√§uft alles automatisch im Hintergrund.<br>Ì†ΩÌ≥± Funktioniert auf Windows, Linux, macOS und Android.</div>
+<div class="small" style="margin-top:24px;">Nach dem Start l√§uft alles automatisch im Hintergrund.<br>Funktioniert auf Windows, Linux, macOS und Android.</div>
 </div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
-const status = $('status');
-const startBtn = $('startBtn');
-const testBtn = $('testBtn');
+const status = $("status");
+const startBtn = $("startBtn");
+const testBtn = $("testBtn");
 
 testBtn.onclick = async () => {
   startBtn.disabled = true;
   testBtn.disabled = true;
-  status.style.display = 'block';
-  status.className = 'status';
-  status.innerHTML = 'Ì†ΩÌ¥ç Teste Verbindung zu OpenCode-Server...';
+  status.style.display = "block";
+  status.className = "status";
+  status.innerHTML = "Teste Verbindung zu OpenCode-Server...";
   try {
-    const res = await fetch($('url').value + '/api/model', {
-      headers: { Authorization: 'Basic ' + btoa('opencode:' + $('password').value) }
+    const res = await fetch($("url").value + "/api/model", {
+      headers: { Authorization: "Basic " + btoa("opencode:" + $("password").value) }
     });
     if (res.ok) {
-      status.className = 'status ok';
-      status.innerHTML = '‚úÖ Verbindung erfolgreich! OpenCode-Server ist erreichbar.';
+      status.className = "status ok";
+      status.innerHTML = "Verbindung erfolgreich! OpenCode-Server ist erreichbar.";
     } else {
-      status.className = 'status err';
-      status.innerHTML = '‚ùå Verbindung fehlgeschlagen. URL und Passwort pr√ºfen.';
+      status.className = "status err";
+      status.innerHTML = "Verbindung fehlgeschlagen. URL und Passwort pr√ºfen.";
     }
   } catch (e) {
-    status.className = 'status err';
-    status.innerHTML = '‚ùå Server nicht erreichbar. Bitte URL pr√ºfen.';
+    status.className = "status err";
+    status.innerHTML = "Server nicht erreichbar. Bitte URL pr√ºfen.";
   }
   startBtn.disabled = false;
   testBtn.disabled = false;
@@ -110,37 +110,37 @@ testBtn.onclick = async () => {
 
 startBtn.onclick = async () => {
   startBtn.disabled = true;
-  startBtn.innerHTML = '‚è≥ Speichere und starte...';
-  status.style.display = 'block';
-  status.className = 'status';
-  status.innerHTML = 'Ì†ΩÌ≤æ Konfiguration wird gespeichert...';
+  startBtn.innerHTML = "Speichere und starte...";
+  status.style.display = "block";
+  status.className = "status";
+  status.innerHTML = "Konfiguration wird gespeichert...";
   const config = {
-    url: $('url').value,
-    password: $('password').value,
-    telegram: $('telegram').value,
-    nvidia: $('nvidia').value,
-    openrouter: $('openrouter').value
+    url: $("url").value,
+    password: $("password").value,
+    telegram: $("telegram").value,
+    nvidia: $("nvidia").value,
+    openrouter: $("openrouter").value
   };
   try {
-    const res = await fetch('/api/setup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/setup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(config)
     });
     if (res.ok) {
-      status.className = 'status ok';
-      status.innerHTML = '‚úÖ Konfiguration gespeichert! UPHarness startet automatisch...';
-      setTimeout(() => { status.innerHTML = 'Ì†ºÌæâ Fertig! Alles l√§uft im Hintergrund.'; }, 1500);
+      status.className = "status ok";
+      status.innerHTML = "Konfiguration gespeichert! UPHarness startet automatisch...";
+      setTimeout(() => { status.innerHTML = "Fertig! Alles l√§uft im Hintergrund."; }, 1500);
     } else {
-      status.className = 'status err';
-      status.innerHTML = '‚ùå Speichern fehlgeschlagen.';
+      status.className = "status err";
+      status.innerHTML = "Speichern fehlgeschlagen.";
     }
   } catch (e) {
-    status.className = 'status err';
-    status.innerHTML = '‚ùå Fehler: ' + e.message;
+    status.className = "status err";
+    status.innerHTML = "Fehler: " + e.message;
   }
   startBtn.disabled = false;
-  startBtn.innerHTML = 'Ì†ΩÌ∫Ä Alles speichern & automatisch starten';
+  startBtn.innerHTML = "Alles speichern & automatisch starten";
 };
 </script>
 </body>
