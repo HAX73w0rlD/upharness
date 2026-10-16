@@ -2,7 +2,7 @@
 
 Autonomer AI-Harness mit Zero-Config-Setup. Einmal konfigurieren, alles startet automatisch.
 
-UPHarness ist ein schlanker, plattformuebergreifender Harness für autonome KI-Agenten. Du trägst einmal deine Zugangsdaten ein (Server-URL, Passwort, optionale API-Keys) – und alles andere startet von selbst.
+UPHarness ist ein schlanker, plattformübergreifender Harness für autonome KI-Agenten. Du trägst einmal deine Zugangsdaten ein (Server-URL, Passwort, optionale API-Keys) – und alles andere startet von selbst.
 
 ## Plattformen
 
@@ -33,12 +33,23 @@ GOOS=linux GOARCH=amd64 go build -o upharness .
 
 Klicke auf Speichern & automatisch starten.
 
-### 4. Modelle prüfen
+### 4. Befehle
+| Befehl | Funktion |
+|--------|----------|
+| ./upharness | Startet Setup-Webserver auf Port 3000 |
+| ./upharness models | Zeigt verfügbare KI-Modelle (live von NVIDIA API) |
+| ./upharness update | Führt git pull durch und zeigt Build-Befehl |
+| ./upharness doctor | Zeigt System-Diagnose und Modell-Status |
+| ./upharness session | Demonstriert Session-Verwaltung |
+| ./upharness telegram | Startet Telegram Bridge (benötigt TELEGRAM_BOT_TOKEN) |
+| ./upharness daemon | Startet Hintergrund-Daemon mit Task-Queue |
+
+### 5. Modelle prüfen
 ./upharness models
 
 Zeigt nur Modelle, die aktuell antworten. Nicht-antwortende werden 6h pausiert.
 
-### 5. Aktualisieren
+### 6. Aktualisieren
 ./upharness update
 sh scripts/update.sh
 
