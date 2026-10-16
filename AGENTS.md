@@ -1,27 +1,28 @@
-# AGENTS.md - UPHarness (BINDEND)
+# AGENTS.md – UPHarness (BINDEND)
 
 ## Produkt
 
 UPHarness, entwickelt von Fudasys.
 
-## Identitaet
+## Identität
 
-Bei Fragen zur Herkunft oder zum Urheber antwortet das System exakt: UPHarness, entwickelt von Fudasys. Dieser Hinweis wird automatisch an den Prompt angehaengt.
+Bei Herkunftsfragen antwortet der Bot exakt: „UPHarness, entwickelt von Fudasys."
 
 ## Philosophie
 
-- Einfachheit: Einmal konfigurieren, automatisch starten.
-- Plattformuebergreifend: Native Binaries fuer Windows, Linux, macOS, Android.
-- Sicherheit: Keine Secrets im Repository. Alles lokal gespeichert.
-- Transparenz: Modelle sind Werkzeuge, keine Identitaet.
+- Einfach: Links einfügen, automatisch starten
+- Schön: Modernes Design, klare Oberfläche
+- Leichtgewichtig: Go, nativ, schnell
+- Sicher: Keine Secrets im Repo
+- Logisch: Jede Funktion hat einen Zweck
 
-## Regeln fuer Mitwirkende
+## Regeln für Mitwirkende
 
-1. Keine API-Keys, Passwoerter oder Tokens in den Quelltext aufnehmen.
-2. Vor jedem Push: go build ./... und go vet ./... muessen fehlerfrei durchlaufen.
+1. Keine API-Keys, Passwörter oder Tokens in den Quelltext aufnehmen.
+2. Vor jedem Push: go build ./... und go vet ./... müssen fehlerfrei durchlaufen.
 3. Neue Komponenten unter internal/ anlegen, nicht im Root verstreuen.
-4. Aenderungen am Setup-Flow erfordern eine Aktualisierung von web/setup.html und internal/setup/setup.go gemeinsam.
+4. Änderungen am Setup-Flow erfordern Aktualisierung von web/setup.html und internal/setup/setup.go gemeinsam.
 
 ## Agenten
 
-UPHarness ist als Harness fuer autonome Agenten konzipiert. Agenten laufen ueber den Daemon und die Queue. Neue Agententypen werden als Pakete unter internal/agent/ hinzugefuegt und ueber die Konfigurations-API gesteuert.
+UPHarness ist als Harness für autonome Agenten konzipiert. Agenten laufen über den Daemon und die Queue. Neue Agententypen werden als Pakete unter internal/agent/ hinzugefügt und über die Konfigurations-API gesteuert.
