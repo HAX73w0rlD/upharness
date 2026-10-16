@@ -1,13 +1,10 @@
 package agent
 
-import (
-	"sync"
-	"time"
-)
+import "sync"
 
 // TaskQueue ist eine globale Warteschlange fuer Agent-Tasks.
 type TaskQueue struct {
-	mu    sync.Mutex
+	mu sync.Mutex
 	items []Task
 }
 
