@@ -5,7 +5,9 @@ import (
 "log"
 "net/http"
 "os"
+"os/exec"
 
+"github.com/HAX73w0rlD/upharness/internal/catalog"
 "github.com/HAX73w0rlD/upharness/internal/setup"
 )
 
@@ -17,20 +19,57 @@ func main() {
 	switch os.Args[1] {
 	case "web":
 		startServer()
+	case "models":
+		printModels()
+	case "update":
+		runUpdate()
 	case "session":
 		fmt.Println("Session management - not yet implemented")
-	case "models":
-		fmt.Println("Available models: nvidia, opencode (free tiers)")
 	case "telegram":
 		fmt.Println("Telegram bridge - configure token via web setup first")
 	case "daemon":
 		fmt.Println("Background daemon - not yet implemented")
 	default:
 		fmt.Println("Unknown command:", os.Args[1])
-		fmt.Println("Usage: upharness [web|session|models|telegram|daemon]")
+		fmt.Println("Usage: upharness [web|models|update|session|telegram|daemon]")
 		fmt.Println("No arguments starts the setup web server.")
 		os.Exit(1)
 	}
+}
+
+func printModels() {
+	list := catalog.LiveList()
+	if len(list) == 0 {
+		fmt.Println("No models found. Set NVIDIA_API_KEY or check network.")
+		return
+	}
+	fmt.Println("Available models:")
+	for _, m := range list {
+		mark := ""
+		if m.Unhealthy {
+			mark = " [unhealthy, cached]"
+		}
+		fmt.Println(" - "+m.ID+" ("+m.Provider+")"+mark)
+	}
+	if os.Getenv("NVIDIA_API_KEY") == "" {
+		fmt.Println("Note: NVIDIA_API_KEY not set, NVIDIA live list skipped.")
+	}
+}
+
+func runUpdate() {
+	cmd := exec.Command("git", "pull")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Println("git pull failed:", err)
+		fmt.Println("Run manually: git pull")
+		return
+	}
+	fmt.Println("Repository updated. Rebuild now:")
+	fmt.Println("  GOOS=android GOARCH=arm64 go build -o upharness .   (Android/Termux)")
+	fmt.Println("  GOOS=linux GOARCH=amd64 go build -o upharness .     (Linux)")
+	fmt.Println("  GOOS=windows GOARCH=amd64 go build -o upharness.exe . (Windows)")
+	fmt.Println("  GOOS=darwin GOARCH=arm64 go build -o upharness .    (macOS)")
 }
 
 func startServer() {
