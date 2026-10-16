@@ -2,27 +2,36 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"os"
-
-	"github.com/HAX73w0rlD/upharness/internal/setup"
 )
 
 func main() {
-	http.HandleFunc("/", setupUIHandler)
-	http.HandleFunc("/api/setup", setup.Handler)
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
+	if len(os.Args) < 2 {
+		fmt.Println("UPHarness - lightweight AI harness")
+		fmt.Println("Usage: upharness <command> [args]")
+		fmt.Println("")
+		fmt.Println("Commands:")
+		fmt.Println("  session   Manage sessions")
+		fmt.Println("  models    List available models")
+		fmt.Println("  telegram  Start Telegram bridge")
+		fmt.Println("  web       Start web server")
+		fmt.Println("  daemon    Start background daemon")
+		os.Exit(0)
 	}
 
-	fmt.Println("Ì†ºÌæ® UPHarness Setup-Server l√§uft auf http://localhost:" + port)
-	fmt.Println("Ì†ΩÌ≥ù Einfach URL & Passwort einf√ºgen ‚Äì alles startet automatisch")
-	log.Fatal(http.ListenAndServe(":"+port, nil))
-}
-
-func setupUIHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "web/setup.html")
+	switch os.Args[1] {
+	case "session":
+		fmt.Println("Session management")
+	case "models":
+		fmt.Println("Available models")
+	case "telegram":
+		fmt.Println("Telegram bridge")
+	case "web":
+		fmt.Println("Web server")
+	case "daemon":
+		fmt.Println("Background daemon")
+	default:
+		fmt.Println("Unknown command:", os.Args[1])
+		os.Exit(1)
+	}
 }
