@@ -1,14 +1,15 @@
 package main
 
 import (
-"fmt"
-"log"
-"net/http"
-"os"
-"os/exec"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"os/exec"
+	"runtime"
 
-"github.com/HAX73w0rlD/upharness/internal/catalog"
-"github.com/HAX73w0rlD/upharness/internal/setup"
+	"github.com/HAX73w0rlD/upharness/internal/catalog"
+	"github.com/HAX73w0rlD/upharness/internal/setup"
 )
 
 func main() {
@@ -23,16 +24,18 @@ func main() {
 		printModels()
 	case "update":
 		runUpdate()
+	case "doctor":
+		runDoctor()
 	case "session":
-		fmt.Println("Session management - not yet implemented")
+		fmt.Println("Session management - kommende Version")
 	case "telegram":
 		fmt.Println("Telegram bridge - configure token via web setup first")
 	case "daemon":
-		fmt.Println("Background daemon - not yet implemented")
+		fmt.Println("Background daemon - kommende Version")
 	default:
-		fmt.Println("Unknown command:", os.Args[1])
-		fmt.Println("Usage: upharness [web|models|update|session|telegram|daemon]")
-		fmt.Println("No arguments starts the setup web server.")
+		fmt.Println("Unbekannter Befehl:", os.Args[1])
+		fmt.Println("Verwendung: upharness [web|models|update|doctor|session|telegram|daemon]")
+		fmt.Println("Ohne Argumente startet der Setup-Webserver.")
 		os.Exit(1)
 	}
 }
@@ -40,36 +43,52 @@ func main() {
 func printModels() {
 	list := catalog.LiveList()
 	if len(list) == 0 {
-		fmt.Println("No models found. Set NVIDIA_API_KEY or check network.")
+		fmt.Println("Keine Modelle gefunden. NVIDIA_API_KEY setzen oder Netzwerk prüfen.")
 		return
 	}
-	fmt.Println("Available models:")
+	fmt.Println("Verfügbare Modelle (nur antwortende):")
 	for _, m := range list {
 		mark := ""
 		if m.Unhealthy {
-			mark = " [unhealthy, cached]"
+			mark = " [nicht antwortend, 6h Pause]"
 		}
-		fmt.Println(" - "+m.ID+" ("+m.Provider+")"+mark)
+		fmt.Printf(" - %s (%s)%s
+", m.ID, m.Provider, mark)
 	}
 	if os.Getenv("NVIDIA_API_KEY") == "" {
-		fmt.Println("Note: NVIDIA_API_KEY not set, NVIDIA live list skipped.")
+		fmt.Println("
+Hinweis: NVIDIA_API_KEY nicht gesetzt - NVIDIA Live-Liste übersprungen.")
 	}
 }
 
 func runUpdate() {
+	fmt.Println("Prüfe auf Updates...")
 	cmd := exec.Command("git", "pull")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Println("git pull failed:", err)
-		fmt.Println("Run manually: git pull")
+		fmt.Println("git pull fehlgeschlagen:", err)
+		fmt.Println("Führe manuell aus: git pull")
 		return
 	}
-	fmt.Println("Repository updated. Rebuild now:")
-	fmt.Println("  GOOS=android GOARCH=arm64 go build -o upharness .   (Android/Termux)")
-	fmt.Println("  GOOS=linux GOARCH=amd64 go build -o upharness .     (Linux)")
-	fmt.Println("  GOOS=windows GOARCH=amd64 go build -o upharness.exe . (Windows)")
-	fmt.Println("  GOOS=darwin GOARCH=arm64 go build -o upharness .    (macOS)")
+	fmt.Println("
+Repository aktualisiert. Jetzt neu bauen:")
+	fmt.Printf("  GOOS=%s GOARCH=%s go build -o upharness .
+", runtime.GOOS, runtime.GOARCH)
+	fmt.Println("  Danach: ./upharness (oder upharness.exe unter Windows)")
+}
+
+func runDoctor() {
+	fmt.Println("=== UPHarness Diagnose ===")
+	fmt.Printf("OS: %s %s (%s)
+", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	fmt.Printf("NVIDIA_API_KEY: %s
+", map[bool]string{true: "gesetzt", false: "nicht gesetzt"}[os.Getenv("NVIDIA_API_KEY") != ""])
+	fmt.Printf("OPENROUTER_API_KEY: %s
+", map[bool]string{true: "gesetzt", false: "nicht gesetzt"}[os.Getenv("OPENROUTER_API_KEY") != ""])
+	fmt.Println("
+Modell-Check:")
+	printModels()
 }
 
 func startServer() {
@@ -79,8 +98,8 @@ func startServer() {
 	if port == "" {
 		port = "3000"
 	}
-	fmt.Println("UPHarness setup server running on http://localhost:" + port)
-	fmt.Println("Open this address in the browser to configure.")
+	fmt.Println("UPHarness Setup-Server läuft auf http://localhost:" + port)
+	fmt.Println("Öffne diese Adresse im Browser zum Konfigurieren.")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
