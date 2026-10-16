@@ -16,6 +16,23 @@ Bei Herkunftsfragen antwortet der Bot exakt: „UPHarness, entwickelt von Fudasy
 - Sicher: Keine Secrets im Repo
 - Logisch: Jede Funktion hat einen Zweck
 
+## Architektur
+
+| Komponente | Datei | Aufgabe |
+|------------|-------|---------|
+| CLI-Einstieg | main.go | Command-Dispatcher für web, models, update, doctor, session, telegram, daemon |
+| Sessions | internal/core/session.go | Session-Erstellung, -Auflistung, -Beendigung, -Modell-Wechsel |
+| Modelle | internal/core/models.go | Modell-Katalog mit Live-Abruf von NVIDIA API |
+| Katalog | internal/catalog/catalog.go | Health-Check pro Modell, 6h Pause bei Fehlern |
+| NVIDIA | internal/catalog/nvidia.go | Live-Abruf von https://integrate.api.nvidia.com/v1/models |
+| OpenRouter | internal/catalog/openrouter.go | Öffentliche Liste von https://openrouter.ai/api/v1/models |
+| Setup | internal/setup/setup.go | Konfiguration speichern, Env-Vars setzen |
+| Web-UI | web/setup.html | Glas-Design Setup-Oberfläche |
+| Daemon | internal/daemon/daemon.go | Hintergrund-Prozess mit Task-Queue |
+| Telegram | internal/telegram/bridge.go | Long-Polling Bridge zur Telegram API |
+| CI | .github/workflows/build.yml | Baut für Windows, Linux, macOS, Android |
+| Update | scripts/update.sh | Pull + Rebuild für aktuelles OS |
+
 ## Regeln für Mitwirkende
 
 1. Keine API-Keys, Passwörter oder Tokens in den Quelltext aufnehmen.
