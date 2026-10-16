@@ -1,52 +1,72 @@
-# Ì†ºÌæ® UPHarness ‚Äì Lightweight AI-Harness
+# UPHarness
 
-**Einfach. Sch√∂n. Automatisch.**
+Autonomer AI-Harness mit Zero-Config-Setup.
 
-UPHarness ist ein schlanker, plattform√ºbergreifender AI-Harness. Du f√ºgst deine Links und Keys in die Web-Oberfl√§che ein ‚Äì alles andere startet automatisch.
+UPHarness ist ein schlanker, plattform√ºbergreifender Harness f√ºr autonome KI-Agenten. Die Idee ist einfach: Du tr√§gst einmal deine Zugangsdaten ein ‚Äì Server-URL, Passwort, optionale API-Keys ‚Äì und alles andere startet von selbst.
 
-## ‚ú® Features
+## F√ºr wen ist das gedacht
 
-| Feature | Beschreibung |
-|---------|-------------|
-| Ì†ºÌæ® **Sch√∂nes Setup** | Glas-Design, Gradienten, einfach zu bedienen |
-| Ì†ΩÌ¥ó **Einf√ºgen & Starten** | Links/Token einf√ºgen, alles startet automatisch |
-| Ì†ΩÌ∂•Ô∏è **Cross-Platform** | Windows, Linux, macOS, Android |
-| ‚ö° **Leichtgewichtig** | In Go, nativ, geringer Speicherverbrauch |
-| Ì†æÌ¥ñ **Telegram-Ready** | Optional: Bot Token einf√ºgen |
-| Ì†ºÌ∂ì **Kostenlose Modelle** | NVIDIA & OpenRouter unterst√ºtzen kostenlose Tiers |
+UPHarness richtet sich an Entwickler und Teams, die KI-Agenten lokal oder auf eigenen Servern betreiben wollen, ohne sich mit Infrastruktur-Konfiguration aufzuhalten. Es l√§uft auf Windows, Linux, macOS und Android.
 
-## Ì†ΩÌ∫Ä Schnellstart
+## Schnellstart
 
-### 1. Build & Start
+### 1. Bauen
+
 ```bash
 go build -o upharness .
+```
+
+### 2. Starten
+
+```bash
 ./upharness
 ```
 
-### 2. Browser √∂ffnen
-√ñffne `http://localhost:3000`
+### 3. Einrichten
 
-### 3. Einf√ºgen & Starten
-F√ºge in die Web-Oberfl√§che ein:
-- OpenCode-Server URL (z. B. `http://127.0.0.1:3002`)
+√ñffne im Browser http://localhost:3000. Trage dort ein:
+
+- OpenCode-Server URL (z. B. http://127.0.0.1:3002)
 - OpenCode Passwort
-- Optional: Telegram Bot Token, NVIDIA Key, OpenRouter Key
+- Optional: Telegram Bot Token, NVIDIA API Key, OpenRouter API Key
 
-Klicke auf **‚ÄûAlles speichern & automatisch starten‚Äú** ‚Äì fertig.
+Klicke auf ‚ÄûSpeichern & automatisch starten‚Äú. UPHarness schreibt die Konfiguration lokal unter ~/.upharness/config.json und startet im Hintergrund Web-Server, Daemon und Telegram-Bridge.
 
-## Ì†ΩÌ≥± Plattformen
+## Architektur
 
-| Plattform | Build |
-|-----------|-------|
-| Windows | `GOOS=windows GOARCH=amd64 go build` |
-| Linux | `GOOS=linux GOARCH=amd64 go build` |
-| macOS | `GOOS=darwin GOARCH=arm64 go build` |
-| Android | `GOOS=android GOARCH=arm64 go build` |
+UPHarness besteht aus lose gekoppelten Komponenten:
 
-## Ì†ΩÌ¥ê Sicherheit
+| Komponente | Aufgabe |
+|------------|---------|
+| Web-Server | Bereitstellt das Setup-Frontend und die Konfigurations-API |
+| Setup | Nimmt Benutzereingaben entgegen und startet alle Dienste automatisch |
+| Core | Session-Management und Modell-Katalog |
+| Queue | Hintergrund-Aufgaben mit Persistenz |
+| Daemon | Langlaufender Worker f√ºr wiederkehrende Aufgaben |
+| Telegram | Optional: Anbindung an Telegram-Bots |
+| Identity | Produkterkennung und Herkunftsanfragen |
 
-Alle Keys werden lokal unter `~/.upharness/config.json` gespeichert und **nie** ins Git-Repository gepusht (siehe `.gitignore`).
+Alle Komponenten sind in Go geschrieben und bauen zu einer einzigen nativen Binary.
 
-## Ì†ΩÌ≥Ñ Lizenz
+## Plattformen
+
+Native Builds √ºber GitHub Actions:
+
+- Windows (GOOS=windows GOARCH=amd64)
+- Linux (GOOS=linux GOARCH=amd64)
+- macOS (GOOS=darwin GOARCH=arm64)
+- Android (GOOS=android GOARCH=arm64)
+
+## Sicherheit
+
+Keine API-Keys oder Passw√∂rter werden ins Repository gepusht. Die .gitignore schlie√üt alle Secret-Dateien aus (.upharness/, secrets.env, service.json, Logs, PIDs). Konfiguration wird ausschlie√ülich lokal gespeichert und √ºber Environment-Variablen an die Dienste weitergereicht.
+
+Als publizierte Modell-Anbieter sind derzeit NVIDIA und OpenRouter hinterlegt ‚Äì ohne API-Werte im Code.
+
+## Lizenz
 
 MIT
+
+---
+
+UPHarness, entwickelt von Fudasys.
