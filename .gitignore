@@ -1,0 +1,17 @@
+# UPHarness public beta - never push secrets
+.upharness/
+secrets.env
+service.json
+telegram.json
+telegram.status.json
+telegram.offset
+*.log
+logs/
+state/
+node_modules/
+dist/
+.tmp/
+ftp.txt
+config/*keys*
+config/service.json
+*.pid
